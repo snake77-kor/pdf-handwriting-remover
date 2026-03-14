@@ -1,10 +1,13 @@
 
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import type { PDFPageProxy, RenderParameters } from 'pdfjs-dist/types/src/display/api';
+import { PDFDocument } from 'pdf-lib';
+import * as pdfjsLib from 'pdfjs-dist';
+import type { PDFPageProxy } from 'pdfjs-dist';
 
-// This is a workaround for pdfjs-dist import issues in some environments.
-// It assumes pdfjsLib is available globally, which we set up in index.tsx
-declare const pdfjsLib: any;
+// Set up the PDF.js worker using the local npm package (Vite-friendly)
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).href;
 
 /**
  * Converts a PDF file into an array of base64 encoded image strings.
@@ -18,7 +21,7 @@ export async function convertPdfToImages(file: File): Promise<string[]> {
   const imagePromises: Promise<string>[] = [];
 
   for (let i = 1; i <= numPages; i++) {
-    const page: PDFPageProxy = await pdf.getPage(i);
+    const page = await pdf.getPage(i) as PDFPageProxy;
     const viewport = page.getViewport({ scale: 2.0 }); // Higher scale for better quality
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -30,10 +33,10 @@ export async function convertPdfToImages(file: File): Promise<string[]> {
     canvas.height = viewport.height;
     canvas.width = viewport.width;
 
-    const renderContext: RenderParameters = {
+    const renderContext = {
       canvasContext: context,
       viewport: viewport,
-    };
+    } as any;
 
     await page.render(renderContext).promise;
     imagePromises.push(Promise.resolve(canvas.toDataURL('image/png')));

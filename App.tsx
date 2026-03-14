@@ -74,8 +74,9 @@ export default function App() {
       setProgress(95);
 
       setProcessingStatus('Step 4/4: Creating download link...');
-      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(pdfBlob);
+      const cleanedFileName = originalFileName.replace(/\.pdf$/i, '_cleaned.pdf');
+      const outputPdfFile = new File([pdfBytes.buffer as ArrayBuffer], cleanedFileName, { type: 'application/pdf' });
+      const url = URL.createObjectURL(outputPdfFile);
       setCleanedPdfUrl(url);
       setProgress(100);
       setProcessingStatus('Done!');

@@ -15,20 +15,29 @@ export const DownloadSection: React.FC<DownloadSectionProps> = ({ url, originalF
     return `${parts.join('.')}_cleaned.pdf`;
   };
 
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = getCleanedFileName();
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => document.body.removeChild(link), 500);
+  };
+
   return (
     <div className="text-center p-6 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-lg">
       <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-4">Processing Complete!</h2>
       <p className="text-green-700 dark:text-green-300 mb-6">Your clean PDF is ready to download.</p>
-      <a
-        href={url}
-        download={getCleanedFileName()}
+      <button
+        onClick={handleDownload}
         className="inline-flex items-center gap-3 px-8 py-4 bg-green-600 text-white font-bold rounded-lg shadow-lg hover:bg-green-700 transform hover:scale-105 transition-transform duration-300"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
         </svg>
         Download Clean PDF
-      </a>
+      </button>
     </div>
   );
 };

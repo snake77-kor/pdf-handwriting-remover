@@ -2,14 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-// Required for pdf.js
-import 'pdfjs-dist/build/pdf.min.js';
-import type { GlobalWorkerOptionsType } from 'pdfjs-dist';
-
-// Make sure to declare the global pdfjsLib object.
-declare const pdfjsLib: GlobalWorkerOptionsType;
-// The workerSrc must match the version of pdfjs-dist imported via the importmap.
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://aistudiocdn.com/pdfjs-dist@5.4.296/build/pdf.worker.min.js`;
+// pdfjs-dist is loaded via importmap in index.html (CDN)
+// Global pdfjsLib is available at runtime via importmap
+declare const pdfjsLib: { GlobalWorkerOptions: { workerSrc: string } };
 
 
 const rootElement = document.getElementById('root');
