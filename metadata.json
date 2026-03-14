@@ -1,0 +1,5 @@
+{
+  "name": "PDF Handwriting Remover",
+  "description": "Upload a PDF with handwritten notes, and this app will use AI to remove the handwriting, providing you with a clean version of the document.",
+  "requestFramePermissions": []
+}
