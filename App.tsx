@@ -95,7 +95,7 @@ export default function App() {
       <div className="w-full max-w-2xl mx-auto">
         <header className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400">
-            PDF Handwriting Remover
+            PDF Handwritten Remover
           </h1>
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
             Upload a PDF with handwritten notes, and let AI clean it for you.
