@@ -15,6 +15,7 @@ export default function App() {
   const [cleanedPdfUrl, setCleanedPdfUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [originalFileName, setOriginalFileName] = useState<string>('');
+  const [apiKey, setApiKey] = useState<string>('');
 
   useEffect(() => {
     // Cleanup object URL to prevent memory leaks
@@ -46,6 +47,10 @@ export default function App() {
 
   const processPDF = useCallback(async () => {
     if (!pdfFile) return;
+    if (!apiKey.trim()) {
+      setError("Please provide a valid Gemini API Key.");
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -64,7 +69,7 @@ export default function App() {
         setProcessingStatus(`Step 2/4: Removing handwriting... (Page ${i + 1}/${totalPages})`);
         // Remove the 'data:image/png;base64,' prefix for the API
         const base64Data = imagePages[i].split(',')[1];
-        const cleanedData = await cleanImageWithGemini(base64Data);
+        const cleanedData = await cleanImageWithGemini(base64Data, apiKey.trim());
         cleanedImagePages.push(`data:image/png;base64,${cleanedData}`);
         setProgress(25 + Math.round(((i + 1) / totalPages) * 50));
       }
@@ -88,7 +93,7 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
-  }, [pdfFile]);
+  }, [pdfFile, apiKey, originalFileName]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex flex-col items-center justify-center p-4 font-sans">
@@ -103,6 +108,18 @@ export default function App() {
         </header>
 
         <main className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 md:p-10 space-y-8">
+          <div className="flex flex-col mb-4">
+            <label htmlFor="api-key" className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Gemini API Key</label>
+            <input 
+              id="api-key"
+              type="password"
+              placeholder="Enter your Gemini API Key starting with AIza..."
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              className="p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
           {!pdfFile && <FileUpload onFileSelect={handleFileSelect} />}
           
           {pdfFile && (

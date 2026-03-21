@@ -1,16 +1,13 @@
-
 import { GoogleGenAI, Modality } from "@google/genai";
-
-const API_KEY = process.env.API_KEY || process.env.GEMINI_API_KEY || '';
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 /**
  * Sends an image to the Gemini API to remove handwriting.
  * @param base64ImageData The base64 encoded image data, without the data URL prefix.
+ * @param apiKey The user's Gemini API key.
  * @returns A promise that resolves to the base64 encoded string of the cleaned image.
  */
-export async function cleanImageWithGemini(base64ImageData: string): Promise<string> {
+export async function cleanImageWithGemini(base64ImageData: string, apiKey: string): Promise<string> {
+  const ai = new GoogleGenAI({ apiKey });
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
